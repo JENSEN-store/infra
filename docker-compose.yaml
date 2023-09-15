@@ -1,0 +1,18 @@
+networks:
+  ecomnet:
+    driver: bridge
+  
+services:
+  application:
+    build: ./application
+    networks:
+      - ecomnet
+    ports:
+      -5002:5002
+    
+    prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yaml:prometheus/prometheus.yaml
