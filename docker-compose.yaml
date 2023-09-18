@@ -10,9 +10,12 @@ services:
     ports:
       -5002:5002
     
-    prometheus:
+  prometheus:
     image: prom/prometheus:latest
     ports:
       - 9090:9090
     volumes:
       - ./prometheus.yaml:prometheus/prometheus.yaml
+    depends_on:
+      - application
+      
