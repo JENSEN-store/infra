@@ -12,10 +12,14 @@ services:
     
   prometheus:
     image: prom/prometheus:latest
-    ports:
-      - 9090:9090
+    container_name: application
+    restart: always
     volumes:
-      - ./prometheus.yaml:prometheus/prometheus.yaml
-    depends_on:
-      - application
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - '9090:9090'
       
