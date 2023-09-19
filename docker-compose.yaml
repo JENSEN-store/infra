@@ -3,21 +3,32 @@ networks:
     driver: bridge
   
 services:
-  application:
+  bestbags-backend:
     build: ./bestbags-nodejs-ecommerce-master
     networks:
       - ecomnet
     ports:
       - '5002:5002'
 
+  environment:
+      MONGO_URI="//root:root@mongo:27017/"
+      SESSION_SECRET="uggabugga"
+      STRIPE_PRIVATE_KEY=""
+      GMAIL_EMAIL="hanway.tran@gmail.com"
+      GMAIL_PASSWORD=""
+      ADMIN_EMAIL=""  
+      ADMIN_PASSWORD=""
+      ADMIN_COOKIE_NAME=""
+      ADMIN_COOKIE_PASSWORD=""   
+
   mongo:
     image: mongo
     networks:
       - ecomnet
     volumes:
-      - ./data:/data/db
-      - ./seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./data: /data/db
+      - ./seedDB/category-seed.js: /docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./seedDB/products-seed.js: /docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
@@ -32,18 +43,18 @@ services:
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME:root
       - ME_CONFIG_MONGODB_ADMINPASSWORD:root
-      - ME_CONFIG_MONGODB_URI:mongodb://root:root@mongo:27017/
+      - ME_CONFIG_MONGODB_URI:mongodb: //root:root@mongo:27017/
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: application
+    container_name: prometheus
     restart: always
     networks:
       - ecomnet
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - ./prometheus:/etc/prometheus
+      - /etc/localtime: /etc/localtime:ro
+      - /etc/timezone: /etc/timezone:ro
+      - ./prometheus: /etc/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
