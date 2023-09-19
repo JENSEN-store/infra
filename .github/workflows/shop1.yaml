@@ -26,6 +26,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: pwd
     - run: cd bestbags-nodejs-ecommerce-master
     - run: npm init -y
     - run: npm install
