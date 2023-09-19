@@ -21,7 +21,9 @@ services:
     networks:
       - ecomnet
     volumes:
-      - ./data:/data/db
+      - ./data:/home/node/data/db
+      - ./bestbags-nodejs-ecommerce-master/seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./bestbags-nodejs-ecommerce-master/seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 #      - ./seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 #      - ./seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
