@@ -4,8 +4,8 @@ networks:
   
 services:
   application:
-    build: ./application
+    build: ./best-nodejs-ecommerce-master
     networks:
-      - ecomnet
+     - ecomnet
     ports:
-      -5002:5002
+      - 5002:5002
