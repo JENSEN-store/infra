@@ -1,8 +1,8 @@
 FROM node:14
 
-WORKDIR /app
+WORKDIR /infra
 
-COPY *app.js .
+COPY app.js .
 
 RUN npm install react
 
