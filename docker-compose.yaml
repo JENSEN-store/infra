@@ -12,6 +12,10 @@ services:
     environment:
       MONGO_URI: "mongodb://root:root@mongo:27017/"
       SESSION_SECRET: "uggabugga"
+    volumes:
+      - ./data:/home/node/data/db
+      - ./bestbags-nodejs-ecommerce-master/seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./bestbags-nodejs-ecommerce-master/seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
 
 
@@ -20,10 +24,6 @@ services:
     container_name: mongo
     networks:
       - ecomnet
-    volumes:
-      - ./data:/home/node/data/db
-      - ./bestbags-nodejs-ecommerce-master/seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./bestbags-nodejs-ecommerce-master/seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 #      - ./seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 #      - ./seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
@@ -51,9 +51,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - ./prometheus:/etc/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - ./prometheus:/etc/prometheus.yml
+#    command:
+#      - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - '9090:9090'
       
