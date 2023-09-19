@@ -1,9 +1,9 @@
 FROM node:14 
 
-WORKDIR /app
+WORKDIR /
+RUN npm install 
 
-COPY app.js .
+COPY ./app.js /app.js
 
-RUN npm install react
 
 CMD [ "node", "app.js" ]

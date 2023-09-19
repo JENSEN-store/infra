@@ -4,16 +4,42 @@ networks:
   
 services:
   application:
-    build: ./application
+    build: ./bestbags-nodejs-ecommerce-master
     networks:
       - ecomnet
     ports:
-      -5002:5002
-    
+      - '5002:5002'
+
+  mongo:
+    image: mongo
+    networks:
+      - ecomnet
+    volumes:
+      - ./data:/data/db
+      - ./seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: database
+
+  mongo-express:
+    image: mongo-express
+    ports:
+    - 8081:8081
+    networks:
+      - ecomnet
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME:root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD:root
+      - ME_CONFIG_MONGODB_URI:mongodb://root:root@mongo:27017/
+
   prometheus:
     image: prom/prometheus:latest
     container_name: application
     restart: always
+    networks:
+      - ecomnet
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
