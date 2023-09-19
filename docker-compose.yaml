@@ -9,16 +9,10 @@ services:
       - ecomnet
     ports:
       - '5002:5002'
-  environment:
-    MONGO_URI: "mongodb://root:root@mongo:27017/"
-    SESSION_SECRET: "uggabugga"
-    STRIPE_PRIVATE_KEY: ""
-    GMAIL_EMAIL: ""
-    GMAIL_PASSWORD: ""
-    ADMIN_EMAIL: ""
-    ADMIN_PASSWORD: ""
-    ADMIN_COOKIE_NAME: ""
-    ADMIN_COOKIE_PASSWORD: ""
+    environment:
+      MONGO_URI: "mongodb://root:root@mongo:27017/"
+      SESSION_SECRET: "uggabugga"
+
 
 
   mongo:
@@ -28,8 +22,8 @@ services:
       - ecomnet
     volumes:
       - ./data:/data/db
-      - ./seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+#      - ./seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+#      - ./seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root

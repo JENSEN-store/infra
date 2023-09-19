@@ -2,8 +2,8 @@ FROM node:14
 
 WORKDIR /app
 
-COPY *app.js .
+COPY . .
 
-RUN npm install react
+RUN npm install
 
 CMD [ "node", "app.js" ]
