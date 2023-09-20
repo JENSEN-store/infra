@@ -4,6 +4,7 @@ networks:
   
 services:
   bestbags-backend: 
+    container_name: bestbags-backend
     build: ./bestbags-nodejs-ecommerce-master
     networks:
       - ecomnet
@@ -14,8 +15,8 @@ services:
       SESSION_SECRET: "uggabugga"
     volumes:
       - ./data:/home/node/data/db
-      - ./bestbags-nodejs-ecommerce-master/seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./bestbags-nodejs-ecommerce-master/seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+#      - ./bestbags-nodejs-ecommerce-master/seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+#      - ./bestbags-nodejs-ecommerce-master/seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
 
 
@@ -24,23 +25,22 @@ services:
     container_name: mongo
     networks:
       - ecomnet
-#      - ./seedDB/category-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-#      - ./seedDB/products-seed.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
       MONGO_INITDB_DATABASE: database
 
-  mongo-express:
-    image: mongo-express
-    ports:
-    - 8081:8081
-    networks:
-      - ecomnet
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_URI: mongodb://root:root@mongo:27017/
+
+#  mongo-express:
+#    image: mongo-express
+#    ports:
+#    - 8081:8081
+#    networks:
+#      - ecomnet
+#    environment:
+#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+#      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+#      ME_CONFIG_MONGODB_URI: mongodb://root:root@mongo:27017/
 
   prometheus:
     image: prom/prometheus:latest
