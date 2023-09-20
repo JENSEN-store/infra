@@ -1,20 +1,28 @@
 networks:
   ecomnet:
     driver: bridge
-  
+
 services:
-  bestbags-backend: 
+  bestbags-backend:
     container_name: bestbags-backend
     build: ./bestbags-nodejs-ecommerce-master
     networks:
       - ecomnet
     ports:
-      - '5002:5002'
+      - "5002:5002"
     environment:
       MONGO_URI: "mongodb://root:root@mongo:27017/"
       SESSION_SECRET: "uggabugga"
     volumes:
       - ./data:/home/node/data/db
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: 127.0.0.1:24224
+        fluentd-async: "true"
+        tag: "service1"
+    depends_on:
+      - fluentd
 
   mongo:
     image: mongo
@@ -36,8 +44,58 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - ./prometheus:/etc/prometheus.yml
-#    command:
-#      - '--config.file=/etc/prometheus/prometheus.yml'
+    #    command:
+    #      - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
-      - '9090:9090'
-      
+      - "9090:9090"
+
+  fluentd:
+    build: ./fluentd
+    container_name: fluentd-container
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    networks:
+      - "my_network"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    container_name: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - "my_network"
+    ports:
+      - "9200:9200"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65535
+        hard: 65535
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data-volume:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.9.2
+    networks:
+      - "my_network"
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+volumes:
+  elasticsearch-data-volume:
+    driver: local
