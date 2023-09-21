@@ -3,11 +3,10 @@ name: CI/CD Workflow for Shop1
 on:
   push:
     branches:
-      
-shop1
+      shop1
 pull_request:
   branches:
-shop1
+      shop1
 
 jobs:
   build:
