@@ -53,7 +53,7 @@ services:
     build: ./fluentd
     container_name: fluentd-container
     volumes:
-      - ./fluentd/conf:/fluentd/etc
+      - ./fluentd/conf/:/fluentd/etc/
     networks:
       - "ecomnet"
     ports:

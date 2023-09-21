@@ -3,7 +3,8 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const logger = require("morgan");
+const morgan = require("morgan");
+const fluentLogger = require('fluent-logger');
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
@@ -25,7 +26,6 @@ app.set("view engine", "ejs");
 const adminRouter = require("./routes/admin");
 app.use("/admin", adminRouter);
 
-app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -106,6 +106,25 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+//Configure Fluentd logger
+fluentLogger.configure({
+  host: 'fluentd',
+  port: 24224,
+  timeout: 3.0,
+  reconnectInterval: 600000
+});
+
+// Configure and use morgan for request logging
+app.use(morgan('combined', {
+  stream: {
+    write: (message) => {
+      fluentLogger.emit('http', {
+        message: message,
+      });
+    },
+  },
+}));
 
 var port = process.env.PORT || 5002;
 app.set("port", port);
