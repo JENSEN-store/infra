@@ -1,32 +1,85 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: shop1 CI
+name: CI/CD Workflow for Shop1
 
 on:
   push:
-    branches: [ "shop1" ]
-  pull_request:
-    branches: [ "shop1" ]
+    branches:
+      
+shop1
+pull_request:
+  branches:
+shop1
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [14.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
+      
+name: Checkout Repository
+      uses: actions/checkout@v3
+
+      
+name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: cd bestbags-nodejs-ecommerce-master
-    - run: npm init -y
-    - run: npm install
-    - run: npm start
+
+      
+name: Change Directory to Project
+      run: cd bestbags-nodejs-ecommerce-master
+
+      
+name: Initialize npm
+      run: npm init -y
+
+      
+name: Install Dependencies
+      run: npm install
+
+      
+name: Start Application
+      run: npm start
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      
+name: Checkout Repository
+      uses: actions/checkout@v3
+
+      
+name: Set up Node.js for Testing
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14.x
+        cache: 'npm'
+
+      
+name: Change Directory to Project
+      run: cd bestbags-nodejs-ecommerce-master
+
+      
+name: Run Tests
+      run: npm test
+
+  prometheus:
+    runs-on: ubuntu-latest
+
+    steps:
+      
+name: Checkout Repository
+      uses: actions/checkout@v3
+
+      
+name: Install Prometheus
+      run: |
+        wget https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-amd64.tar.gz
+        tar -xzf prometheus-2.30.3.linux-amd64.tar.gz
+        cd prometheus-2.30.3.linux-amd64./prometheus --config.file=prometheus.yml
